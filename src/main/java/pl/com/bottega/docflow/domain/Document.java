@@ -19,15 +19,19 @@ public class Document {
 	private String phisicalPath;
 	
 	private Date createDate;
-	
+	private Date expireDate;
+
 	private Money publishCost;
 	
-	public Document(DocumentType type, DocumentNumber number, Date createDate, DocumentStatus status){
+	public Document(DocumentType type, DocumentNumber number, Date createDate, DocumentStatus status, User author,
+                    Date expireDate){
 		this.type = type;
 		this.number = number;
 		this.createDate = createDate;
 		this.status = status;
-	}
+        this.author = author;
+        this.expireDate = expireDate;
+    }
 	
 	public List<Problem> verify(User verifier, Validator validator){
         List<Problem> problems = validator.validate(this, DocumentStatus.VERIFIED);
@@ -61,5 +65,17 @@ public class Document {
 
     public User getAuthor() {
         return author;
+    }
+
+    public DocumentType getType() {
+        return type;
+    }
+
+    public DocumentStatus getStatus() {
+        return status;
+    }
+
+    public Date getCreateDate() {
+        return createDate;
     }
 }

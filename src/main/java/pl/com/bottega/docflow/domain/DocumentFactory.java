@@ -15,7 +15,7 @@ public class DocumentFactory {
 		
 		//3. wartosci poczatkowe
 		DocumentNumber nr = nrGenerator.generate();
-		Document doc = new Document(type, nr, new Date(), DocumentStatus.DRAFT);
+		Document doc = new Document(type, nr, new Date(), DocumentStatus.DRAFT, creator, new Date());
 		
 		return doc;
 	}
