@@ -28,8 +28,8 @@ public class Document {
 		this.status = status;
 	}
 	
-	public void verify(User verifier){
-		//TODO
+	public void verify(User verifier, Validator validator){
+		validator.validate(this, DocumentStatus.VERIFIED);
 	}
 	
 	public void publish(CostCalculator costCalculator){
@@ -46,4 +46,9 @@ public class Document {
 	public DocumentNumber getNumber() {
 		return number;
 	}
+
+
+    public DocumentDescriptor generateDescriptor() {
+        return new DocumentDescriptor(type, number, status);
+    }
 }

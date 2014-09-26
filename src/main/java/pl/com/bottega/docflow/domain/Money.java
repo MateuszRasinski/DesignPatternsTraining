@@ -2,7 +2,6 @@ package pl.com.bottega.docflow.domain;
 
 import java.math.BigDecimal;
 import java.util.Currency;
-import java.util.Locale;
 
 public class Money {
 	private BigDecimal value;
@@ -12,4 +11,12 @@ public class Money {
 		this.value = value;
 		this.currency = currency;
 	}
+
+    public BigDecimal getValue() {
+        return value;
+    }
+
+    public Currency getCurrency() {
+        return currency;
+    }
 }
