@@ -1,6 +1,7 @@
 package pl.com.bottega.docflow.domain;
 
 import java.util.Date;
+import java.util.List;
 
 //@Entity
 public class Document {
@@ -28,16 +29,22 @@ public class Document {
 		this.status = status;
 	}
 	
-	public void verify(User verifier, Validator validator){
-		validator.validate(this, DocumentStatus.VERIFIED);
-	}
+	public List<Problem> verify(User verifier, Validator validator){
+        List<Problem> problems = validator.validate(this, DocumentStatus.VERIFIED);
+        if (problems.isEmpty()) {
+            status = DocumentStatus.VERIFIED;
+        }
+        return problems;
+    }
 	
-	public void publish(CostCalculator costCalculator){
-		if (status != DocumentStatus.VERIFIED)
-			throw new IllegalStateException("Invalid status");
-		status = DocumentStatus.PUBLISHED;
-		publishCost = costCalculator.calculate(type);
-	}
+	public List<Problem> publish(CostCalculator costCalculator, Validator validator){
+        List<Problem> problems = validator.validate(this, DocumentStatus.PUBLISHED);
+        if (!problems.isEmpty()) {
+            status = DocumentStatus.PUBLISHED;
+            publishCost = costCalculator.calculate(type);
+        }
+        return problems;
+    }
 	
 	public void archive(){
 		//TODO
@@ -50,5 +57,9 @@ public class Document {
 
     public DocumentDescriptor generateDescriptor() {
         return new DocumentDescriptor(type, number, status);
+    }
+
+    public User getAuthor() {
+        return author;
     }
 }

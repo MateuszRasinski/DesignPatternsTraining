@@ -1,18 +1,11 @@
 package pl.com.bottega.docflow.application;
 
-import java.util.UUID;
-import pl.com.bottega.docflow.domain.CostCalculator;
-import pl.com.bottega.docflow.domain.CostCalculatorFactory;
-import pl.com.bottega.docflow.domain.Document;
-import pl.com.bottega.docflow.domain.DocumentDescriptor;
-import pl.com.bottega.docflow.domain.DocumentFactory;
-import pl.com.bottega.docflow.domain.DocumentNumber;
-import pl.com.bottega.docflow.domain.DocumentRepository;
-import pl.com.bottega.docflow.domain.DocumentType;
-import pl.com.bottega.docflow.domain.User;
-import pl.com.bottega.docflow.domain.UserRepository;
+import pl.com.bottega.docflow.domain.*;
 import pl.com.bottega.docflow.infrastructure.repo.FakeDocumentRepository;
 import pl.com.bottega.docflow.infrastructure.repo.FakeUserRepository;
+
+import java.util.List;
+import java.util.UUID;
 
 //@Service
 //@Transactional
@@ -35,15 +28,31 @@ public class FlowProcess {
 		return document.getNumber();
 	}
 	
-	public void verifyDocument(UUID verifier, DocumentNumber documentNumber){
-		
-	}
+	public void verifyDocument(UUID verifierId, DocumentNumber documentNumber){
+        Document document = documentRepo.load(documentNumber);
+        User verifier = userRepo.load(verifierId);
+        ChainValidatorFactory chainValidatorFactory = new ChainValidatorFactory();
+        Validator validator = chainValidatorFactory.create();
+
+        List<Problem> problems = document.verify(verifier, validator);
+        if (!problems.isEmpty()) {
+            // DO STH WITH PROBLEMS
+        }
+    }
 	
 	public void publishDocument(DocumentNumber documentNumber){
 		Document document = documentRepo.load(documentNumber);
-        DocumentDescriptor documentDescriptor = document.generateDescriptor();
 
+        ChainValidatorFactory chainValidatorFactory = new ChainValidatorFactory();
+        Validator validator = chainValidatorFactory.create();
+
+
+        DocumentDescriptor documentDescriptor = document.generateDescriptor();
         CostCalculator calculator = costCalculatorFactory.create(documentDescriptor);
-        document.publish(calculator);
-	}
+
+        List<Problem> problems = document.publish(calculator, validator);
+        if (!problems.isEmpty()) {
+            // DO STH WITH PROBLEMS
+        }
+    }
 }
